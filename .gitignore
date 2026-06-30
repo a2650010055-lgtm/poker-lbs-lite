@@ -15,6 +15,7 @@ env/
 .env.*
 !.env.example
 .local_ssh/
+.worktrees/
 
 # Logs and temporary files
 *.log
