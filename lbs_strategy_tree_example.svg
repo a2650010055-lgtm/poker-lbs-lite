@@ -1,0 +1,178 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1050" viewBox="0 0 1600 1050">
+  <defs>
+    <style>
+      .bg { fill: #f6f5ef; }
+      .title { font: 800 44px "Microsoft YaHei", "PingFang SC", Arial, sans-serif; fill: #171a1f; }
+      .subtitle { font: 400 22px "Microsoft YaHei", "PingFang SC", Arial, sans-serif; fill: #5a5f66; }
+      .section { font: 700 20px "Microsoft YaHei", "PingFang SC", Arial, sans-serif; fill: #5a5f66; }
+      .node-title { font: 700 24px "Microsoft YaHei", "PingFang SC", Arial, sans-serif; fill: #171a1f; }
+      .node-text { font: 400 18px "Microsoft YaHei", "PingFang SC", Arial, sans-serif; fill: #3f454d; }
+      .small { font: 400 15px "Microsoft YaHei", "PingFang SC", Arial, sans-serif; fill: #59616b; }
+      .ev-good { font: 800 24px "Microsoft YaHei", "PingFang SC", Arial, sans-serif; fill: #137333; }
+      .ev-mid { font: 800 24px "Microsoft YaHei", "PingFang SC", Arial, sans-serif; fill: #7c5c00; }
+      .ev-bad { font: 800 24px "Microsoft YaHei", "PingFang SC", Arial, sans-serif; fill: #9a2f2a; }
+      .card { fill: #ffffff; stroke: #d7d2c5; stroke-width: 2; }
+      .current { fill: #dfeeff; stroke: #5d95e8; stroke-width: 3; }
+      .belief { fill: #e0f4e7; stroke: #64a977; stroke-width: 3; }
+      .action { fill: #fff0c9; stroke: #d3a535; stroke-width: 3; }
+      .reply { fill: #f8e4e1; stroke: #d87b72; stroke-width: 3; }
+      .future { fill: #ddf4f2; stroke: #65a9a4; stroke-width: 3; }
+      .best { fill: #e5f7dc; stroke: #37a852; stroke-width: 5; }
+      .note { fill: #fff8df; stroke: #d8b544; stroke-width: 2; }
+      .line { stroke: #6b7078; stroke-width: 4; fill: none; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrow); }
+      .best-line { stroke: #1f8f45; stroke-width: 6; fill: none; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrow-green); }
+      .thin-line { stroke: #8c9198; stroke-width: 3; fill: none; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrow); }
+      .dash { stroke: #9c7a1b; stroke-width: 4; fill: none; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 9 8; marker-end: url(#arrow-gold); }
+      .label { font: 700 15px "Microsoft YaHei", "PingFang SC", Arial, sans-serif; fill: #444950; }
+      .green-label { font: 800 16px "Microsoft YaHei", "PingFang SC", Arial, sans-serif; fill: #137333; }
+      .gold-label { font: 700 15px "Microsoft YaHei", "PingFang SC", Arial, sans-serif; fill: #8a6511; }
+    </style>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#6b7078"/>
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#1f8f45"/>
+    </marker>
+    <marker id="arrow-gold" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#9c7a1b"/>
+    </marker>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="9" stdDeviation="11" flood-color="#000000" flood-opacity="0.10"/>
+    </filter>
+  </defs>
+
+  <rect class="bg" width="1600" height="1050"/>
+  <text class="title" x="800" y="72" text-anchor="middle">LBS 策略树到底长什么样？</text>
+  <text class="subtitle" x="800" y="112" text-anchor="middle">它不是一个软件，而是 AI 在后台展开的一张“未来打法分支图”</text>
+
+  <rect class="note" x="120" y="145" width="1360" height="78" rx="16"/>
+  <text class="node-title" x="155" y="178">用大白话说：</text>
+  <text class="node-text" x="155" y="207">LBS 策略树 = 当前这手牌往后怎么走的地图。AI 先猜对手可能有什么牌，再把你和对手的选择一层层展开，最后比较哪条路更赚钱。</text>
+
+  <text class="section" x="125" y="275">当前局面</text>
+  <text class="section" x="425" y="275">AI 猜范围</text>
+  <text class="section" x="700" y="275">你能选什么</text>
+  <text class="section" x="1015" y="275">对手怎么回应</text>
+  <text class="section" x="1325" y="275">结果/EV</text>
+
+  <!-- Current state -->
+  <g filter="url(#shadow)">
+    <rect class="current" x="80" y="315" width="285" height="250" rx="18"/>
+  </g>
+  <text class="node-title" x="120" y="355">当前牌局 State</text>
+  <text class="node-text" x="120" y="397">Hero：BTN</text>
+  <text class="node-text" x="120" y="428">手牌：A♥ K♥</text>
+  <text class="node-text" x="120" y="459">翻牌：K♣ 8♦ 3♠</text>
+  <text class="node-text" x="120" y="490">底池：100</text>
+  <text class="node-text" x="120" y="521">对手：BB 过牌</text>
+
+  <!-- Belief -->
+  <g filter="url(#shadow)">
+    <rect class="belief" x="410" y="315" width="255" height="250" rx="18"/>
+  </g>
+  <text class="node-title" x="442" y="355">Belief：猜对手</text>
+  <text class="node-text" x="442" y="397">Kx：30%</text>
+  <text class="node-text" x="442" y="428">8x：18%</text>
+  <text class="node-text" x="442" y="459">中小对子：22%</text>
+  <text class="node-text" x="442" y="490">后门听牌：15%</text>
+  <text class="node-text" x="442" y="521">空气牌：15%</text>
+
+  <path class="line" d="M370 440 C385 440 392 440 405 440"/>
+  <text class="label" x="375" y="423">输入给模型</text>
+
+  <!-- Hero actions -->
+  <g filter="url(#shadow)">
+    <rect class="action" x="720" y="300" width="215" height="120" rx="16"/>
+  </g>
+  <text class="node-title" x="755" y="340">过牌 Check</text>
+  <text class="node-text" x="755" y="376">保守路线</text>
+  <text class="small" x="755" y="404">可能让对手免费看牌</text>
+
+  <g filter="url(#shadow)">
+    <rect class="best" x="720" y="465" width="215" height="120" rx="16"/>
+  </g>
+  <text class="node-title" x="755" y="505">下注 33%</text>
+  <text class="node-text" x="755" y="541">推荐路线</text>
+  <text class="small" x="755" y="569">能让弱牌继续跟</text>
+
+  <g filter="url(#shadow)">
+    <rect class="action" x="720" y="630" width="215" height="120" rx="16"/>
+  </g>
+  <text class="node-title" x="755" y="670">下注 75%</text>
+  <text class="node-text" x="755" y="706">激进路线</text>
+  <text class="small" x="755" y="734">可能吓跑太多弱牌</text>
+
+  <path class="thin-line" d="M670 440 C700 410 700 365 715 360"/>
+  <path class="best-line" d="M670 440 C700 455 700 520 715 525"/>
+  <path class="thin-line" d="M670 440 C700 485 700 685 715 690"/>
+  <text class="green-label" x="675" y="515">AI 重点搜索</text>
+
+  <!-- Villain replies -->
+  <g filter="url(#shadow)">
+    <rect class="reply" x="1030" y="280" width="230" height="110" rx="16"/>
+  </g>
+  <text class="node-title" x="1062" y="320">对手下注</text>
+  <text class="node-text" x="1062" y="356">概率：42%</text>
+
+  <g filter="url(#shadow)">
+    <rect class="reply" x="1030" y="420" width="230" height="110" rx="16"/>
+  </g>
+  <text class="node-title" x="1062" y="460">对手弃牌</text>
+  <text class="node-text" x="1062" y="496">概率：34%</text>
+
+  <g filter="url(#shadow)">
+    <rect class="reply" x="1030" y="555" width="230" height="110" rx="16"/>
+  </g>
+  <text class="node-title" x="1062" y="595">对手跟注</text>
+  <text class="node-text" x="1062" y="631">概率：55%</text>
+
+  <g filter="url(#shadow)">
+    <rect class="reply" x="1030" y="690" width="230" height="110" rx="16"/>
+  </g>
+  <text class="node-title" x="1062" y="730">对手加注</text>
+  <text class="node-text" x="1062" y="766">概率：11%</text>
+
+  <path class="thin-line" d="M940 360 C970 335 995 335 1025 335"/>
+  <path class="best-line" d="M940 525 C978 492 995 480 1025 475"/>
+  <path class="best-line" d="M940 525 C978 560 995 600 1025 610"/>
+  <path class="best-line" d="M940 525 C978 635 995 725 1025 745"/>
+  <path class="thin-line" d="M940 690 C980 695 995 710 1025 745"/>
+
+  <!-- Future / EV -->
+  <g filter="url(#shadow)">
+    <rect class="future" x="1335" y="275" width="215" height="115" rx="16"/>
+  </g>
+  <text class="node-title" x="1370" y="315">过牌路线</text>
+  <text class="ev-mid" x="1370" y="354">EV +15</text>
+  <text class="small" x="1370" y="379">有点赚钱，但偏保守</text>
+
+  <g filter="url(#shadow)">
+    <rect class="best" x="1335" y="450" width="215" height="145" rx="16"/>
+  </g>
+  <text class="node-title" x="1370" y="490">下注 33% 路线</text>
+  <text class="ev-good" x="1370" y="529">EV +24</text>
+  <text class="small" x="1370" y="558">价值最大</text>
+  <text class="small" x="1370" y="582">弱牌愿意跟，强牌少</text>
+
+  <g filter="url(#shadow)">
+    <rect class="future" x="1335" y="680" width="215" height="115" rx="16"/>
+  </g>
+  <text class="node-title" x="1370" y="720">下注 75% 路线</text>
+  <text class="ev-bad" x="1370" y="759">EV +18</text>
+  <text class="small" x="1370" y="784">赚钱，但赶走弱牌</text>
+
+  <path class="thin-line" d="M1265 335 C1295 330 1308 330 1330 330"/>
+  <path class="best-line" d="M1265 475 C1295 500 1308 520 1330 520"/>
+  <path class="best-line" d="M1265 610 C1298 585 1310 555 1330 540"/>
+  <path class="best-line" d="M1265 745 C1298 700 1310 585 1330 555"/>
+  <path class="thin-line" d="M1265 745 C1295 740 1308 740 1330 740"/>
+
+  <!-- Training loop bottom -->
+  <rect class="note" x="180" y="865" width="1240" height="115" rx="18"/>
+  <text class="node-title" x="220" y="904">做成软件后，用户看到什么？</text>
+  <text class="node-text" x="220" y="939">用户不会看到这么复杂的整棵树。用户只会看到：推荐下注 33%，EV 最高；原因是你有顶对顶踢脚，小下注能从更差的 Kx、8x 和中对拿价值。</text>
+  <text class="small" x="220" y="966">开发时，这棵树存在于程序里：节点 = 牌局状态，分支 = 动作，叶子 = 结果/EV。界面可以把关键分支画出来给用户学习。</text>
+
+  <path class="dash" d="M1440 600 C1440 840 760 815 560 575"/>
+  <text class="gold-label" x="1095" y="840">搜索结果回流训练，让下次判断更快</text>
+</svg>

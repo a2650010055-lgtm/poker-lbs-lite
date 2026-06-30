@@ -1,0 +1,4 @@
+ENGINE_VERSION = "lbs-lite-0.1.0"
+DEFAULT_RANGE_VERSION = "btn-bb-ranges-0.1.0"
+SUPPORTED_POSITION = "BTN_vs_BB"
+SUPPORTED_STREET = "flop"

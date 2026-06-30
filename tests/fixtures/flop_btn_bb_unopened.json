@@ -1,0 +1,34 @@
+{
+  "mode": "single",
+  "table_size": 2,
+  "street": "flop",
+  "position": "BTN_vs_BB",
+  "current_actor": "hero",
+  "hero_seat": "hero",
+  "known_hands": {
+    "hero": [
+      "Ah",
+      "Kh"
+    ]
+  },
+  "unknown_seats": [
+    "villain"
+  ],
+  "board": [
+    "Kc",
+    "8d",
+    "3s"
+  ],
+  "pot": 100,
+  "effective_stacks": {
+    "hero": 900,
+    "villain": 900
+  },
+  "action_history": [
+    {
+      "player": "BB",
+      "action": "check"
+    }
+  ],
+  "objective": "actor_ev"
+}

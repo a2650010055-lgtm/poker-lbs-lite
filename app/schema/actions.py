@@ -1,0 +1,11 @@
+CHECK = "check"
+BET_33 = "bet_33"
+BET_75 = "bet_75"
+FOLD = "fold"
+CALL = "call"
+RAISE_3X = "raise_3x"
+ALL_IN = "all_in"
+
+V01_NO_BET_ACTIONS = [CHECK, BET_33, BET_75]
+V01_FACING_BET_ACTIONS = [FOLD, CALL, RAISE_3X]
+V02_EXTRA_ACTIONS = [ALL_IN]
