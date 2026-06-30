@@ -91,3 +91,24 @@ def test_server_returns_400_for_invalid_json():
 
     assert response.status == 400
     assert body == {"ok": False, "error": "INVALID_JSON"}
+
+
+def test_server_returns_400_for_invalid_utf8_json_body():
+    server, thread = start_test_server()
+    host, port = server.server_address
+
+    try:
+      connection = http.client.HTTPConnection(host, port, timeout=5)
+      connection.request(
+          "POST",
+          "/api/analyze",
+          body=b"\xff",
+          headers={"Content-Type": "application/json"},
+      )
+      response = connection.getresponse()
+      body = json.loads(response.read().decode("utf-8"))
+    finally:
+      stop_test_server(server, thread)
+
+    assert response.status == 400
+    assert body == {"ok": False, "error": "INVALID_JSON"}

@@ -30,7 +30,7 @@ class StrategyRequestHandler(BaseHTTPRequestHandler):
 
         try:
             payload = self._read_json_body()
-        except json.JSONDecodeError:
+        except (json.JSONDecodeError, UnicodeDecodeError, ValueError):
             self._send_json(status=400, payload={"ok": False, "error": "INVALID_JSON"})
             return
 
