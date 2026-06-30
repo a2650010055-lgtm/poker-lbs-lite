@@ -520,6 +520,15 @@
       }
     };
 
+    const ACTION_LABELS = {
+      check: "Check",
+      bet_33: "Bet 33%",
+      bet_75: "Bet 75%",
+      fold: "Fold",
+      call: "Call",
+      raise_3x: "Raise 3x"
+    };
+
     function byId(id) {
       return document.getElementById(id);
     }
@@ -575,7 +584,7 @@
     }
 
     function formatAction(action) {
-      return String(action || "unknown").replace(/_/g, " ");
+      return ACTION_LABELS[action] || String(action || "unknown").replace(/_/g, " ");
     }
 
     function formatPercent(value) {

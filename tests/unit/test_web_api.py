@@ -56,3 +56,13 @@ def test_analyze_raw_payload_rejects_non_dict_payload():
     response = analyze_raw_payload(["not", "a", "state"])
 
     assert response == {"ok": False, "error": "INVALID_PAYLOAD"}
+
+
+def test_analyze_raw_payload_returns_error_for_malformed_field_shape():
+    raw = load_fixture("flop_btn_bb_unopened.json")
+    raw["known_hands"] = []
+
+    response = analyze_raw_payload(raw)
+
+    assert response["ok"] is False
+    assert response["error"]

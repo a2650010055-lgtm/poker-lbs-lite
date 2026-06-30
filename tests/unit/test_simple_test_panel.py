@@ -40,3 +40,11 @@ def test_panel_posts_to_analyze_endpoint_and_renders_result():
     assert "function readState()" in html
     assert "function renderResult(result)" in html
     assert "function renderError(message)" in html
+
+
+def test_panel_uses_expected_action_display_labels():
+    html = read_panel()
+
+    assert 'bet_33: "Bet 33%"' in html
+    assert 'bet_75: "Bet 75%"' in html
+    assert 'raise_3x: "Raise 3x"' in html

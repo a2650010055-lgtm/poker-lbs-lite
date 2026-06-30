@@ -112,3 +112,40 @@ def test_server_returns_400_for_invalid_utf8_json_body():
 
     assert response.status == 400
     assert body == {"ok": False, "error": "INVALID_JSON"}
+
+
+def test_server_returns_400_for_malformed_state_shape():
+    server, thread = start_test_server()
+    host, port = server.server_address
+    payload = {
+        "mode": "single",
+        "table_size": 2,
+        "street": "flop",
+        "position": "BTN_vs_BB",
+        "current_actor": "hero",
+        "hero_seat": "hero",
+        "known_hands": [],
+        "unknown_seats": ["villain"],
+        "board": ["Kc", "8d", "3s"],
+        "pot": 100,
+        "effective_stacks": {"hero": 900, "villain": 900},
+        "action_history": [{"player": "BB", "action": "check"}],
+        "objective": "actor_ev",
+    }
+
+    try:
+      connection = http.client.HTTPConnection(host, port, timeout=5)
+      connection.request(
+          "POST",
+          "/api/analyze",
+          body=json.dumps(payload).encode("utf-8"),
+          headers={"Content-Type": "application/json"},
+      )
+      response = connection.getresponse()
+      body = json.loads(response.read().decode("utf-8"))
+    finally:
+      stop_test_server(server, thread)
+
+    assert response.status == 400
+    assert body["ok"] is False
+    assert body["error"]

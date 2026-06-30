@@ -11,12 +11,19 @@ def analyze_raw_payload(payload: Any) -> dict:
         return {"ok": False, "error": "INVALID_PAYLOAD"}
 
     try:
+        _validate_payload_shape(payload)
         state = normalize_raw_state(payload)
         result = StrategyEngine().analyze_hand(state)
     except (KeyError, TypeError, ValueError) as exc:
         return {"ok": False, "error": _error_message(exc)}
 
     return {"ok": True, "result": serialize_analysis_result(result)}
+
+
+def _validate_payload_shape(payload: dict) -> None:
+    for field in ("known_hands", "effective_stacks"):
+        if field in payload and not isinstance(payload[field], dict):
+            raise TypeError(f"INVALID_FIELD: {field}")
 
 
 def serialize_analysis_result(result: AnalysisResult) -> dict:
