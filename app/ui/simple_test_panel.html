@@ -1,0 +1,810 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Poker LBS-Lite Test Panel</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f4f7f8;
+      --surface: #ffffff;
+      --surface-strong: #eef3f4;
+      --line: #d5dee2;
+      --text: #18272f;
+      --muted: #61717b;
+      --accent: #087f8c;
+      --accent-strong: #05616b;
+      --warn: #a05a00;
+      --danger: #b42318;
+      --good: #1f7a3f;
+      --shadow: 0 14px 34px rgba(24, 39, 47, 0.09);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 15px;
+      letter-spacing: 0;
+    }
+
+    .app-shell {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 28px 0 36px;
+    }
+
+    header {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 16px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(26px, 4vw, 40px);
+      font-weight: 780;
+      line-height: 1.08;
+      letter-spacing: 0;
+    }
+
+    .status-line {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    .status-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--good);
+      box-shadow: 0 0 0 4px rgba(31, 122, 63, 0.12);
+    }
+
+    main {
+      display: grid;
+      grid-template-columns: minmax(300px, 390px) minmax(0, 1fr);
+      gap: 20px;
+      margin-top: 22px;
+      align-items: start;
+    }
+
+    section {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 16px;
+      line-height: 1.2;
+      font-weight: 760;
+      letter-spacing: 0;
+    }
+
+    .controls {
+      padding: 18px;
+      display: grid;
+      gap: 18px;
+    }
+
+    .field-group {
+      display: grid;
+      gap: 10px;
+    }
+
+    .field-group-title {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0;
+    }
+
+    .grid-2,
+    .grid-3 {
+      display: grid;
+      gap: 10px;
+    }
+
+    .grid-2 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .grid-3 {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    label {
+      display: grid;
+      gap: 6px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    input,
+    select {
+      width: 100%;
+      height: 40px;
+      border: 1px solid #c7d2d7;
+      border-radius: 6px;
+      background: #fbfdfd;
+      color: var(--text);
+      font: inherit;
+      padding: 8px 10px;
+      outline: none;
+    }
+
+    input:focus,
+    select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(8, 127, 140, 0.14);
+    }
+
+    .actions {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    button {
+      min-height: 42px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: var(--surface-strong);
+      color: var(--text);
+      font: inherit;
+      font-weight: 760;
+      cursor: pointer;
+    }
+
+    button:hover {
+      border-color: #9cafb7;
+      background: #e5ecef;
+    }
+
+    .primary {
+      border-color: var(--accent);
+      background: var(--accent);
+      color: #ffffff;
+    }
+
+    .primary:hover {
+      border-color: var(--accent-strong);
+      background: var(--accent-strong);
+    }
+
+    .results-stack {
+      display: grid;
+      gap: 20px;
+    }
+
+    .result-panel {
+      min-height: 320px;
+      padding: 18px;
+      display: grid;
+      gap: 18px;
+    }
+
+    .empty-state,
+    .error-box {
+      border: 1px dashed #bdc9ce;
+      border-radius: 8px;
+      padding: 22px;
+      background: #fbfdfd;
+      color: var(--muted);
+    }
+
+    .error-box {
+      border-color: rgba(180, 35, 24, 0.35);
+      background: #fff7f6;
+      color: var(--danger);
+    }
+
+    .result-summary {
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 1fr);
+      gap: 12px;
+    }
+
+    .metric {
+      min-height: 76px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+      background: #fbfdfd;
+      display: grid;
+      align-content: space-between;
+      gap: 8px;
+    }
+
+    .metric span {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .metric strong {
+      font-size: 20px;
+      line-height: 1.15;
+      overflow-wrap: anywhere;
+    }
+
+    .section-title {
+      margin: 0 0 10px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .strategy-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .strategy-row {
+      display: grid;
+      grid-template-columns: 110px minmax(100px, 1fr) 52px;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .action-name {
+      font-weight: 760;
+      overflow-wrap: anywhere;
+    }
+
+    .bar {
+      height: 12px;
+      border-radius: 999px;
+      background: #e3ebee;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      width: 0;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--accent), #3aa675);
+    }
+
+    .percent {
+      text-align: right;
+      color: var(--muted);
+      font-variant-numeric: tabular-nums;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fbfdfd;
+    }
+
+    th,
+    td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      font-variant-numeric: tabular-nums;
+    }
+
+    th {
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .tag {
+      border: 1px solid #c8d7dc;
+      border-radius: 999px;
+      background: #f6fafb;
+      color: #31515d;
+      padding: 6px 9px;
+      font-size: 12px;
+      font-weight: 760;
+    }
+
+    .debug-panel pre {
+      margin: 0;
+      min-height: 180px;
+      max-height: 360px;
+      overflow: auto;
+      padding: 16px 18px;
+      background: #102027;
+      color: #d8f3f2;
+      font: 12px/1.5 Consolas, "Courier New", monospace;
+      border-radius: 0 0 8px 8px;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+
+    @media (max-width: 860px) {
+      .app-shell {
+        width: min(100% - 20px, 680px);
+        padding-top: 18px;
+      }
+
+      header,
+      main,
+      .result-summary {
+        grid-template-columns: 1fr;
+      }
+
+      header {
+        align-items: start;
+      }
+
+      main {
+        display: grid;
+      }
+
+      .status-line {
+        white-space: normal;
+      }
+
+      .actions,
+      .grid-3 {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <header>
+      <div>
+        <h1>Poker LBS-Lite Test Panel</h1>
+      </div>
+      <div class="status-line" aria-live="polite">
+        <span class="status-dot" aria-hidden="true"></span>
+        <span>Local API target: /api/analyze</span>
+      </div>
+    </header>
+
+    <main>
+      <section aria-labelledby="inputsTitle">
+        <div class="panel-header">
+          <h2 id="inputsTitle">State Inputs</h2>
+        </div>
+        <div class="controls">
+          <div class="field-group">
+            <div class="field-group-title">Hero Hand</div>
+            <div class="grid-2">
+              <label for="heroCard1">Card 1
+                <input id="heroCard1" value="Ah" autocomplete="off">
+              </label>
+              <label for="heroCard2">Card 2
+                <input id="heroCard2" value="Kh" autocomplete="off">
+              </label>
+            </div>
+          </div>
+
+          <div class="field-group">
+            <div class="field-group-title">Board</div>
+            <div class="grid-3">
+              <label for="boardCard1">Flop 1
+                <input id="boardCard1" value="Kc" autocomplete="off">
+              </label>
+              <label for="boardCard2">Flop 2
+                <input id="boardCard2" value="8d" autocomplete="off">
+              </label>
+              <label for="boardCard3">Flop 3
+                <input id="boardCard3" value="3s" autocomplete="off">
+              </label>
+            </div>
+          </div>
+
+          <div class="field-group">
+            <div class="field-group-title">Stacks And Pot</div>
+            <div class="grid-3">
+              <label for="pot">Pot
+                <input id="pot" type="number" min="0" step="1" value="100">
+              </label>
+              <label for="heroStack">Hero Stack
+                <input id="heroStack" type="number" min="0" step="1" value="900">
+              </label>
+              <label for="villainStack">Villain Stack
+                <input id="villainStack" type="number" min="0" step="1" value="900">
+              </label>
+            </div>
+          </div>
+
+          <div class="field-group">
+            <div class="field-group-title">Facing Action</div>
+            <div class="grid-2">
+              <label for="situation">Situation
+                <select id="situation">
+                  <option value="check">Check</option>
+                  <option value="bet">Bet</option>
+                </select>
+              </label>
+              <label for="betSize">Bet Size
+                <input id="betSize" type="number" min="0" step="1" value="0">
+              </label>
+            </div>
+          </div>
+
+          <div class="actions">
+            <button id="loadCheckPreset" type="button">Check Preset</button>
+            <button id="loadBetPreset" type="button">Bet Preset</button>
+            <button id="runAnalysis" class="primary" type="button">Run Analysis</button>
+          </div>
+        </div>
+      </section>
+
+      <div class="results-stack">
+        <section aria-labelledby="resultsTitle">
+          <div class="panel-header">
+            <h2 id="resultsTitle">Analysis Result</h2>
+          </div>
+          <div id="resultPanel" class="result-panel" aria-live="polite">
+            <div class="empty-state">Run a preset or edit the state, then analyze.</div>
+          </div>
+        </section>
+
+        <section class="debug-panel" aria-labelledby="debugTitle">
+          <div class="panel-header">
+            <h2 id="debugTitle">Debug JSON</h2>
+          </div>
+          <pre id="debugJson">{}</pre>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const PRESETS = {
+      check: {
+        heroCard1: "Ah",
+        heroCard2: "Kh",
+        boardCard1: "Kc",
+        boardCard2: "8d",
+        boardCard3: "3s",
+        pot: 100,
+        heroStack: 900,
+        villainStack: 900,
+        situation: "check",
+        betSize: 0
+      },
+      bet: {
+        heroCard1: "Qh",
+        heroCard2: "Jh",
+        boardCard1: "Kc",
+        boardCard2: "8d",
+        boardCard3: "3s",
+        pot: 150,
+        heroStack: 850,
+        villainStack: 850,
+        situation: "bet",
+        betSize: 50
+      }
+    };
+
+    function byId(id) {
+      return document.getElementById(id);
+    }
+
+    function cleanCard(id) {
+      return byId(id).value.trim();
+    }
+
+    function numberValue(id) {
+      const value = Number(byId(id).value);
+      return Number.isFinite(value) ? value : 0;
+    }
+
+    function readState() {
+      const situation = byId("situation").value;
+      const actionHistory = situation === "bet"
+        ? [{ player: "BB", action: "bet", size: numberValue("betSize") }]
+        : [{ player: "BB", action: "check" }];
+
+      return {
+        mode: "single",
+        table_size: 2,
+        street: "flop",
+        position: "BTN_vs_BB",
+        current_actor: "hero",
+        hero_seat: "hero",
+        known_hands: {
+          hero: [cleanCard("heroCard1"), cleanCard("heroCard2")]
+        },
+        unknown_seats: ["villain"],
+        board: [cleanCard("boardCard1"), cleanCard("boardCard2"), cleanCard("boardCard3")],
+        pot: numberValue("pot"),
+        effective_stacks: {
+          hero: numberValue("heroStack"),
+          villain: numberValue("villainStack")
+        },
+        action_history: actionHistory,
+        objective: "actor_ev"
+      };
+    }
+
+    function applyPreset(name) {
+      const preset = PRESETS[name];
+      Object.keys(preset).forEach(function(id) {
+        byId(id).value = preset[id];
+      });
+      syncDebugState();
+      renderEmpty();
+    }
+
+    function syncDebugState() {
+      byId("debugJson").textContent = JSON.stringify(readState(), null, 2);
+    }
+
+    function formatAction(action) {
+      return String(action || "unknown").replace(/_/g, " ");
+    }
+
+    function formatPercent(value) {
+      const numeric = Number(value);
+      if (!Number.isFinite(numeric)) {
+        return "0%";
+      }
+      return Math.round(numeric * 100) + "%";
+    }
+
+    function formatNumber(value) {
+      const numeric = Number(value);
+      if (!Number.isFinite(numeric)) {
+        return "0.00";
+      }
+      return numeric.toFixed(2);
+    }
+
+    function clearResultPanel() {
+      const panel = byId("resultPanel");
+      panel.className = "result-panel";
+      panel.textContent = "";
+      return panel;
+    }
+
+    function renderEmpty() {
+      const panel = clearResultPanel();
+      const empty = document.createElement("div");
+      empty.className = "empty-state";
+      empty.textContent = "Preset loaded. Run analysis when ready.";
+      panel.appendChild(empty);
+    }
+
+    function createMetric(label, value) {
+      const metric = document.createElement("div");
+      metric.className = "metric";
+
+      const labelNode = document.createElement("span");
+      labelNode.textContent = label;
+      metric.appendChild(labelNode);
+
+      const valueNode = document.createElement("strong");
+      valueNode.textContent = value;
+      metric.appendChild(valueNode);
+
+      return metric;
+    }
+
+    function renderResult(result) {
+      const panel = clearResultPanel();
+
+      const summary = document.createElement("div");
+      summary.className = "result-summary";
+      summary.appendChild(createMetric("Recommendation", formatAction(result.recommend)));
+      summary.appendChild(createMetric("Confidence", formatPercent(result.confidence)));
+      summary.appendChild(createMetric("Engine", result.engine_version || "unknown"));
+      panel.appendChild(summary);
+
+      const strategySection = document.createElement("div");
+      const strategyTitle = document.createElement("h3");
+      strategyTitle.className = "section-title";
+      strategyTitle.textContent = "Strategy Frequencies";
+      strategySection.appendChild(strategyTitle);
+
+      const strategyList = document.createElement("div");
+      strategyList.className = "strategy-list";
+      Object.entries(result.strategy || {}).forEach(function(entry) {
+        const action = entry[0];
+        const frequency = Number(entry[1]) || 0;
+        const row = document.createElement("div");
+        row.className = "strategy-row";
+
+        const name = document.createElement("div");
+        name.className = "action-name";
+        name.textContent = formatAction(action);
+        row.appendChild(name);
+
+        const bar = document.createElement("div");
+        bar.className = "bar";
+        const fill = document.createElement("div");
+        fill.className = "bar-fill";
+        fill.style.width = Math.max(0, Math.min(100, frequency * 100)) + "%";
+        bar.appendChild(fill);
+        row.appendChild(bar);
+
+        const percent = document.createElement("div");
+        percent.className = "percent";
+        percent.textContent = formatPercent(frequency);
+        row.appendChild(percent);
+
+        strategyList.appendChild(row);
+      });
+      strategySection.appendChild(strategyList);
+      panel.appendChild(strategySection);
+
+      const evSection = document.createElement("div");
+      const evTitle = document.createElement("h3");
+      evTitle.className = "section-title";
+      evTitle.textContent = "Action EV";
+      evSection.appendChild(evTitle);
+
+      const table = document.createElement("table");
+      const thead = document.createElement("thead");
+      const headerRow = document.createElement("tr");
+      ["Action", "EV"].forEach(function(label) {
+        const th = document.createElement("th");
+        th.textContent = label;
+        headerRow.appendChild(th);
+      });
+      thead.appendChild(headerRow);
+      table.appendChild(thead);
+
+      const tbody = document.createElement("tbody");
+      Object.entries(result.ev || {}).forEach(function(entry) {
+        const tr = document.createElement("tr");
+        const actionCell = document.createElement("td");
+        actionCell.textContent = formatAction(entry[0]);
+        tr.appendChild(actionCell);
+
+        const evCell = document.createElement("td");
+        evCell.textContent = formatNumber(entry[1]);
+        tr.appendChild(evCell);
+        tbody.appendChild(tr);
+      });
+      table.appendChild(tbody);
+      evSection.appendChild(table);
+      panel.appendChild(evSection);
+
+      const tagsSection = document.createElement("div");
+      const tagsTitle = document.createElement("h3");
+      tagsTitle.className = "section-title";
+      tagsTitle.textContent = "Reason Tags";
+      tagsSection.appendChild(tagsTitle);
+
+      const tagList = document.createElement("div");
+      tagList.className = "tag-list";
+      (result.reason_codes || []).forEach(function(reason) {
+        const tag = document.createElement("span");
+        tag.className = "tag";
+        tag.textContent = reason;
+        tagList.appendChild(tag);
+      });
+      tagsSection.appendChild(tagList);
+      panel.appendChild(tagsSection);
+    }
+
+    function renderError(message) {
+      const panel = clearResultPanel();
+      panel.classList.add("error-state");
+
+      const box = document.createElement("div");
+      box.className = "error-box";
+
+      const title = document.createElement("strong");
+      title.textContent = "Analysis error";
+      box.appendChild(title);
+
+      const detail = document.createElement("div");
+      detail.textContent = message || "Unknown error";
+      box.appendChild(detail);
+
+      panel.appendChild(box);
+    }
+
+    async function runAnalysis() {
+      const state = readState();
+      byId("debugJson").textContent = JSON.stringify(state, null, 2);
+
+      const panel = clearResultPanel();
+      const pending = document.createElement("div");
+      pending.className = "empty-state";
+      pending.textContent = "Analyzing current state...";
+      panel.appendChild(pending);
+
+      try {
+        const response = await fetch("/api/analyze", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(state)
+        });
+        const payload = await response.json().catch(function() {
+          return {};
+        });
+        byId("debugJson").textContent = JSON.stringify({
+          request: state,
+          response: payload
+        }, null, 2);
+
+        if (!response.ok) {
+          renderError(payload.error || "REQUEST_FAILED");
+          return;
+        }
+
+        if (!payload.ok) {
+          renderError(payload.error || "ANALYSIS_FAILED");
+          return;
+        }
+
+        renderResult(payload.result || {});
+      } catch (error) {
+        renderError(error && error.message ? error.message : "NETWORK_ERROR");
+      }
+    }
+
+    byId("loadCheckPreset").addEventListener("click", function() {
+      applyPreset("check");
+    });
+    byId("loadBetPreset").addEventListener("click", function() {
+      applyPreset("bet");
+    });
+    byId("runAnalysis").addEventListener("click", runAnalysis);
+    [
+      "heroCard1",
+      "heroCard2",
+      "boardCard1",
+      "boardCard2",
+      "boardCard3",
+      "pot",
+      "heroStack",
+      "villainStack",
+      "situation",
+      "betSize"
+    ].forEach(function(id) {
+      byId(id).addEventListener("input", syncDebugState);
+      byId(id).addEventListener("change", syncDebugState);
+    });
+    syncDebugState();
+  </script>
+</body>
+</html>
