@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Poker LBS-Lite Test Panel</title>
+  <title>德州扑克 LBS-Lite 测试面板</title>
   <style>
     :root {
       color-scheme: light;
@@ -393,81 +393,81 @@
   <div class="app-shell">
     <header>
       <div>
-        <h1>Poker LBS-Lite Test Panel</h1>
+        <h1>德州扑克 LBS-Lite 测试面板</h1>
       </div>
       <div class="status-line" aria-live="polite">
         <span class="status-dot" aria-hidden="true"></span>
-        <span>Local API target: /api/analyze</span>
+        <span>本地接口：/api/analyze</span>
       </div>
     </header>
 
     <main>
       <section aria-labelledby="inputsTitle">
         <div class="panel-header">
-          <h2 id="inputsTitle">State Inputs</h2>
+          <h2 id="inputsTitle">状态输入</h2>
         </div>
         <div class="controls">
           <div class="field-group">
-            <div class="field-group-title">Hero Hand</div>
+            <div class="field-group-title">Hero 手牌</div>
             <div class="grid-2">
-              <label for="heroCard1">Card 1
+              <label for="heroCard1">手牌 1
                 <input id="heroCard1" value="Ah" autocomplete="off">
               </label>
-              <label for="heroCard2">Card 2
+              <label for="heroCard2">手牌 2
                 <input id="heroCard2" value="Kh" autocomplete="off">
               </label>
             </div>
           </div>
 
           <div class="field-group">
-            <div class="field-group-title">Board</div>
+            <div class="field-group-title">公共牌</div>
             <div class="grid-3">
-              <label for="boardCard1">Flop 1
+              <label for="boardCard1">翻牌 1
                 <input id="boardCard1" value="Kc" autocomplete="off">
               </label>
-              <label for="boardCard2">Flop 2
+              <label for="boardCard2">翻牌 2
                 <input id="boardCard2" value="8d" autocomplete="off">
               </label>
-              <label for="boardCard3">Flop 3
+              <label for="boardCard3">翻牌 3
                 <input id="boardCard3" value="3s" autocomplete="off">
               </label>
             </div>
           </div>
 
           <div class="field-group">
-            <div class="field-group-title">Stacks And Pot</div>
+            <div class="field-group-title">底池和筹码</div>
             <div class="grid-3">
-              <label for="pot">Pot
+              <label for="pot">底池
                 <input id="pot" type="number" min="0" step="1" value="100">
               </label>
-              <label for="heroStack">Hero Stack
+              <label for="heroStack">Hero 筹码
                 <input id="heroStack" type="number" min="0" step="1" value="900">
               </label>
-              <label for="villainStack">Villain Stack
+              <label for="villainStack">对手筹码
                 <input id="villainStack" type="number" min="0" step="1" value="900">
               </label>
             </div>
           </div>
 
           <div class="field-group">
-            <div class="field-group-title">Facing Action</div>
+            <div class="field-group-title">面对动作</div>
             <div class="grid-2">
-              <label for="situation">Situation
+              <label for="situation">当前情况
                 <select id="situation">
-                  <option value="check">Check</option>
-                  <option value="bet">Bet</option>
+                  <option value="check">过牌</option>
+                  <option value="bet">下注</option>
                 </select>
               </label>
-              <label for="betSize">Bet Size
+              <label for="betSize">下注额
                 <input id="betSize" type="number" min="0" step="1" value="0">
               </label>
             </div>
           </div>
 
           <div class="actions">
-            <button id="loadCheckPreset" type="button">Check Preset</button>
-            <button id="loadBetPreset" type="button">Bet Preset</button>
-            <button id="runAnalysis" class="primary" type="button">Run Analysis</button>
+            <button id="loadCheckPreset" type="button">过牌预设</button>
+            <button id="loadBetPreset" type="button">下注预设</button>
+            <button id="runAnalysis" class="primary" type="button">开始分析</button>
           </div>
         </div>
       </section>
@@ -475,16 +475,16 @@
       <div class="results-stack">
         <section aria-labelledby="resultsTitle">
           <div class="panel-header">
-            <h2 id="resultsTitle">Analysis Result</h2>
+            <h2 id="resultsTitle">分析结果</h2>
           </div>
           <div id="resultPanel" class="result-panel" aria-live="polite">
-            <div class="empty-state">Run a preset or edit the state, then analyze.</div>
+            <div class="empty-state">选择预设或修改牌局状态，然后开始分析。</div>
           </div>
         </section>
 
         <section class="debug-panel" aria-labelledby="debugTitle">
           <div class="panel-header">
-            <h2 id="debugTitle">Debug JSON</h2>
+            <h2 id="debugTitle">调试 JSON</h2>
           </div>
           <pre id="debugJson">{}</pre>
         </section>
@@ -521,12 +521,12 @@
     };
 
     const ACTION_LABELS = {
-      check: "Check",
-      bet_33: "Bet 33%",
-      bet_75: "Bet 75%",
-      fold: "Fold",
-      call: "Call",
-      raise_3x: "Raise 3x"
+      check: "过牌",
+      bet_33: "下注 33%",
+      bet_75: "下注 75%",
+      fold: "弃牌",
+      call: "跟注",
+      raise_3x: "加注 3x"
     };
 
     function byId(id) {
@@ -614,7 +614,7 @@
       const panel = clearResultPanel();
       const empty = document.createElement("div");
       empty.className = "empty-state";
-      empty.textContent = "Preset loaded. Run analysis when ready.";
+      empty.textContent = "预设已载入，确认后可以开始分析。";
       panel.appendChild(empty);
     }
 
@@ -638,15 +638,15 @@
 
       const summary = document.createElement("div");
       summary.className = "result-summary";
-      summary.appendChild(createMetric("Recommendation", formatAction(result.recommend)));
-      summary.appendChild(createMetric("Confidence", formatPercent(result.confidence)));
-      summary.appendChild(createMetric("Engine", result.engine_version || "unknown"));
+      summary.appendChild(createMetric("推荐动作", formatAction(result.recommend)));
+      summary.appendChild(createMetric("置信度", formatPercent(result.confidence)));
+      summary.appendChild(createMetric("引擎版本", result.engine_version || "unknown"));
       panel.appendChild(summary);
 
       const strategySection = document.createElement("div");
       const strategyTitle = document.createElement("h3");
       strategyTitle.className = "section-title";
-      strategyTitle.textContent = "Strategy Frequencies";
+      strategyTitle.textContent = "策略频率";
       strategySection.appendChild(strategyTitle);
 
       const strategyList = document.createElement("div");
@@ -683,13 +683,13 @@
       const evSection = document.createElement("div");
       const evTitle = document.createElement("h3");
       evTitle.className = "section-title";
-      evTitle.textContent = "Action EV";
+      evTitle.textContent = "动作 EV";
       evSection.appendChild(evTitle);
 
       const table = document.createElement("table");
       const thead = document.createElement("thead");
       const headerRow = document.createElement("tr");
-      ["Action", "EV"].forEach(function(label) {
+      ["动作", "EV"].forEach(function(label) {
         const th = document.createElement("th");
         th.textContent = label;
         headerRow.appendChild(th);
@@ -716,7 +716,7 @@
       const tagsSection = document.createElement("div");
       const tagsTitle = document.createElement("h3");
       tagsTitle.className = "section-title";
-      tagsTitle.textContent = "Reason Tags";
+      tagsTitle.textContent = "判断依据";
       tagsSection.appendChild(tagsTitle);
 
       const tagList = document.createElement("div");
@@ -739,11 +739,11 @@
       box.className = "error-box";
 
       const title = document.createElement("strong");
-      title.textContent = "Analysis error";
+      title.textContent = "分析出错";
       box.appendChild(title);
 
       const detail = document.createElement("div");
-      detail.textContent = message || "Unknown error";
+      detail.textContent = message || "未知错误";
       box.appendChild(detail);
 
       panel.appendChild(box);
@@ -756,7 +756,7 @@
       const panel = clearResultPanel();
       const pending = document.createElement("div");
       pending.className = "empty-state";
-      pending.textContent = "Analyzing current state...";
+      pending.textContent = "正在分析当前牌局...";
       panel.appendChild(pending);
 
       try {
@@ -776,18 +776,18 @@
         }, null, 2);
 
         if (!response.ok) {
-          renderError(payload.error || "REQUEST_FAILED");
+          renderError(payload.error || "请求失败");
           return;
         }
 
         if (!payload.ok) {
-          renderError(payload.error || "ANALYSIS_FAILED");
+          renderError(payload.error || "分析失败");
           return;
         }
 
         renderResult(payload.result || {});
       } catch (error) {
-        renderError(error && error.message ? error.message : "NETWORK_ERROR");
+        renderError(error && error.message ? error.message : "网络错误");
       }
     }
 

@@ -32,7 +32,7 @@ def test_server_serves_index_page():
 
     assert response.status == 200
     assert response.getheader("Content-Type") == "text/html; charset=utf-8"
-    assert "Poker LBS-Lite Test Panel" in body
+    assert "德州扑克 LBS-Lite 测试面板" in body
 
 
 def test_server_analyze_endpoint_returns_strategy_json():

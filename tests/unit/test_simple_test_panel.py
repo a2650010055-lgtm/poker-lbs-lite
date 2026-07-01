@@ -12,7 +12,17 @@ def test_panel_contains_required_inputs_and_buttons():
     html = read_panel()
 
     required_tokens = [
-        "Poker LBS-Lite Test Panel",
+        "德州扑克 LBS-Lite 测试面板",
+        "状态输入",
+        "Hero 手牌",
+        "公共牌",
+        "底池和筹码",
+        "面对动作",
+        "过牌预设",
+        "下注预设",
+        "开始分析",
+        "分析结果",
+        "调试 JSON",
         'id="heroCard1"',
         'id="heroCard2"',
         'id="boardCard1"',
@@ -45,6 +55,9 @@ def test_panel_posts_to_analyze_endpoint_and_renders_result():
 def test_panel_uses_expected_action_display_labels():
     html = read_panel()
 
-    assert 'bet_33: "Bet 33%"' in html
-    assert 'bet_75: "Bet 75%"' in html
-    assert 'raise_3x: "Raise 3x"' in html
+    assert 'check: "过牌"' in html
+    assert 'bet_33: "下注 33%"' in html
+    assert 'bet_75: "下注 75%"' in html
+    assert 'fold: "弃牌"' in html
+    assert 'call: "跟注"' in html
+    assert 'raise_3x: "加注 3x"' in html
