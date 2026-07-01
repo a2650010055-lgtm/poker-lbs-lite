@@ -4,7 +4,11 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
-from app.web_api import analyze_raw_payload, load_collected_state_payload
+from app.web_api import (
+    analyze_raw_payload,
+    import_website_state_payload,
+    load_collected_state_payload,
+)
 
 
 UI_PATH = Path(__file__).resolve().parent / "ui" / "simple_test_panel.html"
@@ -43,7 +47,12 @@ class StrategyRequestHandler(BaseHTTPRequestHandler):
         self._send_json(status=404, payload={"ok": False, "error": "NOT_FOUND"})
 
     def do_POST(self) -> None:
-        if self.path != "/api/analyze":
+        handlers = {
+            "/api/analyze": analyze_raw_payload,
+            "/api/import-website-state": import_website_state_payload,
+        }
+        handler = handlers.get(self.path)
+        if handler is None:
             self._send_json(status=404, payload={"ok": False, "error": "NOT_FOUND"})
             return
 
@@ -54,7 +63,7 @@ class StrategyRequestHandler(BaseHTTPRequestHandler):
             return
 
         try:
-            response = analyze_raw_payload(payload)
+            response = handler(payload)
         except Exception:
             self._send_json(status=500, payload={"ok": False, "error": "INTERNAL_ERROR"})
             return
