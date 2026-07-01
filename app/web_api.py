@@ -39,6 +39,22 @@ def load_collected_state_payload(scenario: str) -> dict:
     }
 
 
+def import_website_state_payload(payload: Any) -> dict:
+    if not isinstance(payload, dict):
+        return {"ok": False, "error": "INVALID_PAYLOAD"}
+
+    try:
+        raw_state = convert_website_state_to_raw_state(payload)
+    except CollectedStateError as exc:
+        return {"ok": False, "error": str(exc)}
+
+    return {
+        "ok": True,
+        "collected_state": payload,
+        "raw_state": raw_state,
+    }
+
+
 def _validate_payload_shape(payload: dict) -> None:
     for field in ("known_hands", "effective_stacks"):
         if field in payload and not isinstance(payload[field], dict):
