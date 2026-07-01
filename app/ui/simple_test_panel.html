@@ -173,6 +173,13 @@
       gap: 10px;
     }
 
+    .collector-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(140px, auto);
+      gap: 10px;
+      align-items: end;
+    }
+
     button {
       min-height: 42px;
       border: 1px solid var(--line);
@@ -386,6 +393,10 @@
       .grid-3 {
         grid-template-columns: 1fr;
       }
+
+      .collector-row {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
@@ -461,6 +472,19 @@
               <label for="betSize">下注额
                 <input id="betSize" type="number" min="0" step="1" value="0">
               </label>
+            </div>
+          </div>
+
+          <div class="field-group">
+            <div class="field-group-title">采集状态</div>
+            <div class="collector-row">
+              <label for="collectedScenario">采集示例
+                <select id="collectedScenario">
+                  <option value="check">对手过牌</option>
+                  <option value="bet">对手下注</option>
+                </select>
+              </label>
+              <button id="loadCollectedState" type="button">读取采集状态</button>
             </div>
           </div>
 
@@ -579,6 +603,63 @@
       renderEmpty();
     }
 
+    function applyRawState(rawState) {
+      const hand = rawState.known_hands && rawState.known_hands.hero
+        ? rawState.known_hands.hero
+        : ["", ""];
+      const board = Array.isArray(rawState.board)
+        ? rawState.board
+        : ["", "", ""];
+      const stacks = rawState.effective_stacks || {};
+      const history = Array.isArray(rawState.action_history)
+        ? rawState.action_history
+        : [];
+      const lastAction = history.length ? history[history.length - 1] : {};
+
+      byId("heroCard1").value = hand[0] || "";
+      byId("heroCard2").value = hand[1] || "";
+      byId("boardCard1").value = board[0] || "";
+      byId("boardCard2").value = board[1] || "";
+      byId("boardCard3").value = board[2] || "";
+      byId("pot").value = rawState.pot || 0;
+      byId("heroStack").value = stacks.hero || 0;
+      byId("villainStack").value = stacks.villain || 0;
+
+      if (lastAction.action === "bet") {
+        byId("situation").value = "bet";
+        byId("betSize").value = lastAction.size || 0;
+      } else {
+        byId("situation").value = "check";
+        byId("betSize").value = 0;
+      }
+    }
+
+    async function loadCollectedState() {
+      const scenario = byId("collectedScenario").value;
+
+      try {
+        const response = await fetch("/api/collected-state?scenario=" + encodeURIComponent(scenario));
+        const payload = await response.json().catch(function() {
+          return {};
+        });
+        byId("debugJson").textContent = JSON.stringify(payload, null, 2);
+
+        if (!response.ok || !payload.ok) {
+          renderError(payload.error || "采集状态读取失败");
+          return;
+        }
+
+        applyRawState(payload.raw_state || {});
+        byId("debugJson").textContent = JSON.stringify({
+          collected_state: payload.collected_state,
+          raw_state: payload.raw_state
+        }, null, 2);
+        renderEmpty("采集状态已读取，可以开始分析。");
+      } catch (error) {
+        renderError(error && error.message ? error.message : "采集状态读取失败");
+      }
+    }
+
     function syncDebugState() {
       byId("debugJson").textContent = JSON.stringify(readState(), null, 2);
     }
@@ -610,11 +691,11 @@
       return panel;
     }
 
-    function renderEmpty() {
+    function renderEmpty(message) {
       const panel = clearResultPanel();
       const empty = document.createElement("div");
       empty.className = "empty-state";
-      empty.textContent = "预设已载入，确认后可以开始分析。";
+      empty.textContent = message || "预设已载入，确认后可以开始分析。";
       panel.appendChild(empty);
     }
 
@@ -797,6 +878,7 @@
     byId("loadBetPreset").addEventListener("click", function() {
       applyPreset("bet");
     });
+    byId("loadCollectedState").addEventListener("click", loadCollectedState);
     byId("runAnalysis").addEventListener("click", runAnalysis);
     [
       "heroCard1",

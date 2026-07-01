@@ -23,6 +23,9 @@ def test_panel_contains_required_inputs_and_buttons():
         "开始分析",
         "分析结果",
         "调试 JSON",
+        "采集状态",
+        "采集示例",
+        "读取采集状态",
         'id="heroCard1"',
         'id="heroCard2"',
         'id="boardCard1"',
@@ -35,6 +38,8 @@ def test_panel_contains_required_inputs_and_buttons():
         'id="betSize"',
         'id="loadCheckPreset"',
         'id="loadBetPreset"',
+        'id="collectedScenario"',
+        'id="loadCollectedState"',
         'id="runAnalysis"',
         'id="resultPanel"',
     ]
@@ -47,7 +52,10 @@ def test_panel_posts_to_analyze_endpoint_and_renders_result():
     html = read_panel()
 
     assert 'fetch("/api/analyze"' in html
+    assert 'fetch("/api/collected-state?scenario=" + encodeURIComponent(scenario))' in html
     assert "function readState()" in html
+    assert "function loadCollectedState()" in html
+    assert "function applyRawState(rawState)" in html
     assert "function renderResult(result)" in html
     assert "function renderError(message)" in html
 
