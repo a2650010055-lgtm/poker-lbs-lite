@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
 
-from app.web_api import analyze_raw_payload
+from app.web_api import analyze_raw_payload, load_collected_state_payload
 
 
 FIXTURE_DIR = Path(__file__).parents[1] / "fixtures"
@@ -66,3 +66,23 @@ def test_analyze_raw_payload_returns_error_for_malformed_field_shape():
 
     assert response["ok"] is False
     assert response["error"]
+
+
+def test_load_collected_state_payload_returns_converted_check_state():
+    response = load_collected_state_payload("check")
+
+    assert response["ok"] is True
+    assert response["collected_state"]["hand_id"] == "demo-check-001"
+    assert response["raw_state"]["known_hands"] == {"hero": ["Ah", "Kh"]}
+    assert response["raw_state"]["action_history"] == [
+        {"player": "BB", "action": "check"}
+    ]
+
+
+def test_load_collected_state_payload_returns_error_for_unknown_scenario():
+    response = load_collected_state_payload("unknown")
+
+    assert response == {
+        "ok": False,
+        "error": "UNSUPPORTED_COLLECTED_SCENARIO",
+    }
