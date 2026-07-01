@@ -56,6 +56,16 @@ def test_panel_posts_to_analyze_endpoint_and_renders_result():
     assert "function readState()" in html
     assert "function loadCollectedState()" in html
     assert "function applyRawState(rawState)" in html
+    assert "Array.isArray(rawState.known_hands.hero)" in html
+    assert 'button.disabled = true' in html
+    assert 'select.disabled = true' in html
+    assert 'button.textContent = "读取中..."' in html
+    assert 'button.disabled = false' in html
+    assert 'select.disabled = false' in html
+    assert 'button.textContent = "读取采集状态"' in html
+    assert "finally {" in html
+    assert 'byId("loadCollectedState").addEventListener("click", loadCollectedState)' in html
+    assert "采集状态已读取，可以开始分析。" in html
     assert "function renderResult(result)" in html
     assert "function renderError(message)" in html
 

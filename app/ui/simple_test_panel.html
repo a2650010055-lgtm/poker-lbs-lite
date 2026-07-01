@@ -604,7 +604,8 @@
     }
 
     function applyRawState(rawState) {
-      const hand = rawState.known_hands && rawState.known_hands.hero
+      const hand = rawState.known_hands
+        && Array.isArray(rawState.known_hands.hero)
         ? rawState.known_hands.hero
         : ["", ""];
       const board = Array.isArray(rawState.board)
@@ -635,7 +636,13 @@
     }
 
     async function loadCollectedState() {
-      const scenario = byId("collectedScenario").value;
+      const button = byId("loadCollectedState");
+      const select = byId("collectedScenario");
+      const scenario = select.value;
+
+      button.disabled = true;
+      select.disabled = true;
+      button.textContent = "读取中...";
 
       try {
         const response = await fetch("/api/collected-state?scenario=" + encodeURIComponent(scenario));
@@ -657,6 +664,10 @@
         renderEmpty("采集状态已读取，可以开始分析。");
       } catch (error) {
         renderError(error && error.message ? error.message : "采集状态读取失败");
+      } finally {
+        button.disabled = false;
+        select.disabled = false;
+        button.textContent = "读取采集状态";
       }
     }
 
