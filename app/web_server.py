@@ -2,8 +2,9 @@ import argparse
 import json
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
+from urllib.parse import parse_qs, urlparse
 
-from app.web_api import analyze_raw_payload
+from app.web_api import analyze_raw_payload, load_collected_state_payload
 
 
 UI_PATH = Path(__file__).resolve().parent / "ui" / "simple_test_panel.html"
@@ -13,12 +14,30 @@ class StrategyRequestHandler(BaseHTTPRequestHandler):
     server_version = "PokerLBSLite/0.1"
 
     def do_GET(self) -> None:
-        if self.path in {"/", "/index.html"}:
+        parsed = urlparse(self.path)
+
+        if parsed.path in {"/", "/index.html"}:
             self._send_bytes(
                 status=200,
                 body=UI_PATH.read_bytes(),
                 content_type="text/html; charset=utf-8",
             )
+            return
+
+        if parsed.path == "/api/collected-state":
+            query = parse_qs(parsed.query)
+            scenario = query.get("scenario", ["check"])[0]
+            try:
+                response = load_collected_state_payload(scenario)
+            except Exception:
+                self._send_json(
+                    status=500,
+                    payload={"ok": False, "error": "INTERNAL_ERROR"},
+                )
+                return
+
+            status = 200 if response.get("ok") else 400
+            self._send_json(status=status, payload=response)
             return
 
         self._send_json(status=404, payload={"ok": False, "error": "NOT_FOUND"})

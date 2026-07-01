@@ -149,3 +149,42 @@ def test_server_returns_400_for_malformed_state_shape():
     assert response.status == 400
     assert body["ok"] is False
     assert body["error"]
+
+
+def test_server_collected_state_endpoint_returns_sample_raw_state():
+    server, thread = start_test_server()
+    host, port = server.server_address
+
+    try:
+      connection = http.client.HTTPConnection(host, port, timeout=5)
+      connection.request("GET", "/api/collected-state?scenario=bet")
+      response = connection.getresponse()
+      body = json.loads(response.read().decode("utf-8"))
+    finally:
+      stop_test_server(server, thread)
+
+    assert response.status == 200
+    assert body["ok"] is True
+    assert body["collected_state"]["hand_id"] == "demo-bet-001"
+    assert body["raw_state"]["action_history"] == [
+        {"player": "BB", "action": "bet", "size": 50}
+    ]
+
+
+def test_server_collected_state_endpoint_returns_400_for_unknown_scenario():
+    server, thread = start_test_server()
+    host, port = server.server_address
+
+    try:
+      connection = http.client.HTTPConnection(host, port, timeout=5)
+      connection.request("GET", "/api/collected-state?scenario=unknown")
+      response = connection.getresponse()
+      body = json.loads(response.read().decode("utf-8"))
+    finally:
+      stop_test_server(server, thread)
+
+    assert response.status == 400
+    assert body == {
+        "ok": False,
+        "error": "UNSUPPORTED_COLLECTED_SCENARIO",
+    }
