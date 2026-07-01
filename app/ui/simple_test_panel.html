@@ -149,9 +149,9 @@
     }
 
     input,
-    select {
+    select,
+    textarea {
       width: 100%;
-      height: 40px;
       border: 1px solid #c7d2d7;
       border-radius: 6px;
       background: #fbfdfd;
@@ -161,8 +161,22 @@
       outline: none;
     }
 
+    input,
+    select {
+      height: 40px;
+    }
+
+    textarea {
+      min-height: 132px;
+      resize: vertical;
+      line-height: 1.45;
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 12px;
+    }
+
     input:focus,
-    select:focus {
+    select:focus,
+    textarea:focus {
       border-color: var(--accent);
       box-shadow: 0 0 0 3px rgba(8, 127, 140, 0.14);
     }
@@ -488,6 +502,30 @@
             </div>
           </div>
 
+          <div class="field-group">
+            <div class="field-group-title">&#x7f51;&#x7ad9;&#x72b6;&#x6001; JSON</div>
+            <textarea id="websiteStateJson" autocomplete="off" spellcheck="false">{
+  "table_id": "real-table-1",
+  "hand_id": "real-hand-001",
+  "street": "flop",
+  "position": "BTN_vs_BB",
+  "current_actor": "hero",
+  "hero_cards": ["Ah", "Kh"],
+  "board_cards": ["Kc", "8d", "3s"],
+  "pot": 100,
+  "stacks": {
+    "hero": 900,
+    "villain": 900
+  },
+  "facing_action": {
+    "player": "BB",
+    "action": "check",
+    "size": 0
+  }
+}</textarea>
+            <button id="importWebsiteState" type="button">&#x5bfc;&#x5165;&#x7f51;&#x7ad9;&#x72b6;&#x6001;</button>
+          </div>
+
           <div class="actions">
             <button id="loadCheckPreset" type="button">过牌预设</button>
             <button id="loadBetPreset" type="button">下注预设</button>
@@ -668,6 +706,62 @@
         button.disabled = false;
         select.disabled = false;
         button.textContent = "读取采集状态";
+      }
+    }
+
+    async function importWebsiteState() {
+      const button = byId("importWebsiteState");
+      const rawJson = byId("websiteStateJson").value.trim();
+
+      if (!rawJson) {
+        renderError("\u8bf7\u5148\u7c98\u8d34\u7f51\u7ad9\u72b6\u6001 JSON");
+        return;
+      }
+
+      let websiteState;
+      try {
+        websiteState = JSON.parse(rawJson);
+      } catch (error) {
+        renderError("JSON \u683c\u5f0f\u9519\u8bef");
+        return;
+      }
+
+      button.disabled = true;
+      button.textContent = "\u5bfc\u5165\u4e2d...";
+
+      try {
+        const response = await fetch("/api/import-website-state", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(websiteState)
+        });
+        const payload = await response.json().catch(function() {
+          return {};
+        });
+        byId("debugJson").textContent = JSON.stringify(payload, null, 2);
+
+        if (!response.ok || !payload.ok) {
+          renderError(payload.error || "\u7f51\u7ad9\u72b6\u6001\u5bfc\u5165\u5931\u8d25");
+          return;
+        }
+
+        applyRawState(payload.raw_state || {});
+        byId("debugJson").textContent = JSON.stringify({
+          imported_state: payload.collected_state,
+          raw_state: payload.raw_state
+        }, null, 2);
+        renderEmpty("\u7f51\u7ad9\u72b6\u6001\u5df2\u5bfc\u5165\uff0c\u53ef\u4ee5\u5f00\u59cb\u5206\u6790\u3002");
+      } catch (error) {
+        renderError(
+          error && error.message
+            ? error.message
+            : "\u7f51\u7ad9\u72b6\u6001\u5bfc\u5165\u5931\u8d25"
+        );
+      } finally {
+        button.disabled = false;
+        button.textContent = "\u5bfc\u5165\u7f51\u7ad9\u72b6\u6001";
       }
     }
 
@@ -890,6 +984,7 @@
       applyPreset("bet");
     });
     byId("loadCollectedState").addEventListener("click", loadCollectedState);
+    byId("importWebsiteState").addEventListener("click", importWebsiteState);
     byId("runAnalysis").addEventListener("click", runAnalysis);
     [
       "heroCard1",

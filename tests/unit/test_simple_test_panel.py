@@ -26,6 +26,8 @@ def test_panel_contains_required_inputs_and_buttons():
         "采集状态",
         "采集示例",
         "读取采集状态",
+        "&#x7f51;&#x7ad9;&#x72b6;&#x6001; JSON",
+        "&#x5bfc;&#x5165;&#x7f51;&#x7ad9;&#x72b6;&#x6001;",
         'id="heroCard1"',
         'id="heroCard2"',
         'id="boardCard1"',
@@ -40,6 +42,8 @@ def test_panel_contains_required_inputs_and_buttons():
         'id="loadBetPreset"',
         'id="collectedScenario"',
         'id="loadCollectedState"',
+        'id="websiteStateJson"',
+        'id="importWebsiteState"',
         'id="runAnalysis"',
         'id="resultPanel"',
     ]
@@ -53,8 +57,10 @@ def test_panel_posts_to_analyze_endpoint_and_renders_result():
 
     assert 'fetch("/api/analyze"' in html
     assert 'fetch("/api/collected-state?scenario=" + encodeURIComponent(scenario))' in html
+    assert 'fetch("/api/import-website-state"' in html
     assert "function readState()" in html
     assert "function loadCollectedState()" in html
+    assert "function importWebsiteState()" in html
     assert "function applyRawState(rawState)" in html
     assert "Array.isArray(rawState.known_hands.hero)" in html
     assert 'button.disabled = true' in html
@@ -65,7 +71,10 @@ def test_panel_posts_to_analyze_endpoint_and_renders_result():
     assert 'button.textContent = "读取采集状态"' in html
     assert "finally {" in html
     assert 'byId("loadCollectedState").addEventListener("click", loadCollectedState)' in html
+    assert 'byId("importWebsiteState").addEventListener("click", importWebsiteState)' in html
     assert "采集状态已读取，可以开始分析。" in html
+    assert "\\u7f51\\u7ad9\\u72b6\\u6001\\u5df2\\u5bfc\\u5165" in html
+    assert "JSON \\u683c\\u5f0f\\u9519\\u8bef" in html
     assert "function renderResult(result)" in html
     assert "function renderError(message)" in html
 
